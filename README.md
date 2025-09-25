@@ -1,5 +1,7 @@
-In this tutorial 
 
+
+Configuring Group Policy
+Force Update Group Policy
 Dealing with Account Lockouts
 Enabling and Disabling Accounts
 Observing Logs
@@ -98,7 +100,7 @@ Optional:
 - This means our Group Policy worked!
 - Let's go back to being a Domain Admin on our Domain Controller.
 
-# Step 4: Domain Admin 
+# Step 4: Domain Admin  Unlocks Account
 
 - As the Domain Admin we will go back to the **Active Directory Users and Computers** window to view **cal.did**'s account.
 - Since we have so many user accounts, right-click mydomain.com -> click Find
@@ -129,7 +131,72 @@ Optional:
 <img width="354" height="427" alt="Screenshot 2025-09-24 at 11 24 19 PM" src="https://github.com/user-attachments/assets/25db734d-4eca-4635-9f3b-637e6242017e" />
 
 
----
+## Step 6: Reset Password for Domain Users
 
-work in-progress (stopped at 17:30)
+- Let's reset a domain user's password
+- Login into **DC-1** as the Domain Admin
+- Navigate to the **Active Directory Users and Computers** window
+- Select any Domain User
+- Right click the user and select the **Reset Password** option (screenshot below)
+  
+<img width="366" height="337" alt="Screenshot 2025-09-25 at 3 04 09 PM" src="https://github.com/user-attachments/assets/101fab7e-5377-42b0-8ead-f7a2ea3fad16" />
+
+- Set their new password
+- You can even unlock their account from here!
+
+<img width="378" height="255" alt="Screenshot 2025-09-25 at 3 05 11 PM" src="https://github.com/user-attachments/assets/b0e70192-498f-4784-b7a9-b6bd649e75df" />
+
+- You should get this popup.
+  
+<img width="320" height="147" alt="Screenshot 2025-09-25 at 3 06 08 PM" src="https://github.com/user-attachments/assets/68f968d8-f77f-454c-a673-0c21404ccce1" />
+
+
+## Step 7: Enable & Disable Accounts
+
+- Navigate to the **Active Directory Users and Computers** window
+- Select any Domain User. I'll pick cal.did
+- Right click the username and click **Disable Account** (screenshot below)
+
+<img width="418" height="117" alt="Screenshot 2025-09-25 at 3 08 52 PM" src="https://github.com/user-attachments/assets/5e135b95-b86f-4dc2-b5d8-93a36373e751" />
+
+- Search for the user account you just disabled
+- Notice how there's a small arrow pointing downwards next to the username. This is an indicator that the account is disabled.
+
+<img width="161" height="27" alt="Screenshot 2025-09-25 at 3 09 39 PM" src="https://github.com/user-attachments/assets/c3f8cab0-70a7-4236-957d-49c97593420a" />
+
+- Attempt to login to the **CLIENT-1** machine as the domain user cal.did
+- This is what should popup since we disabled the account in the previous step (screenshot below)
+
+<img width="251" height="264" alt="Screenshot 2025-09-25 at 3 11 30 PM" src="https://github.com/user-attachments/assets/a94d6098-7ef5-4ff2-8c9a-9c98e0535143" />
+
+## Step 9: Observe Logs (as Domain Admin in CLIENT-1 machine)
+
+- Click the Start menu -> Type in **eventvwr.msc**
+- You should get the **Event Viewer** window to pop up (screenshot below)
+- Expand **Windows Logs** -> Click **Security**
+
+<img width="787" height="550" alt="Screenshot 2025-09-25 at 3 15 06 PM" src="https://github.com/user-attachments/assets/1a12c162-e6f7-4cbb-8b45-4644680e197e" />
+
+- Now you can see the Security logs.
+- This EventID of 4625 corresponds with login attempt failures. These were logged when we purposely failed to login earlier to lockout our domain user account.
+
+<img width="917" height="152" alt="Screenshot 2025-09-25 at 3 31 07 PM" src="https://github.com/user-attachments/assets/aae17b7c-ec94-4bc5-8af2-312dc795c831" />
+
+- If you look in the General section you can see a lot more detailed information about this event.
+- For example, you can even see the IP address of the person that attempted to log into the machine.
+
+<img width="962" height="741" alt="Screenshot 2025-09-25 at 3 37 55 PM" src="https://github.com/user-attachments/assets/9a176f1e-9e5f-4e0a-bc3d-0b1b2881a6b0" />
+
+
+## Optional Step: You can view the logs as a Domain User as well. 
+- If you were logged into a regular non-admin Domain User account on the CLIENT-1 machine, you won't be able to just view the logs.
+- However! You can still view logs you just have to follow some different steps.
+- Type in **eventvwr.msc** -> Right-click and click **Run as administrator**
+- You should get a popup (screenshot below)
+- Type in the **Domain Admin** credentials -> Hit Yes
+- You should now be able to view the logs as a Domain Admin, even though you are logged into the machine as a Domain User.
+
+<img width="308" height="324" alt="Screenshot 2025-09-25 at 3 28 47 PM" src="https://github.com/user-attachments/assets/94e5e93a-4494-4790-a26d-df846e44e132" />
+
+
 
