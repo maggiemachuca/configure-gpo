@@ -1,12 +1,39 @@
+This tutorial walks through configuring Group Policy settings to enforce account lockout policies in an Active Directory domain. It covers forcing policy updates, simulating a user lockout, and managing accounts using Active Directory Users and Computers.
+
+<h1>Group Policy Management: Account Lockout Policies, User Management, and Event Log Auditing</h1>
 
 
-Configuring Group Policy
-Force Update Group Policy
-Dealing with Account Lockouts
-Enabling and Disabling Accounts
-Observing Logs
+<h2>Environments and Technologies Used</h2>
 
-# Step 1: Configure Group Policy settings as Domain Admin
+- Active Directory Domain Services (AD DS)
+- Group Policy Management Console (GPMC)
+- Active Directory Users and Computers (ADUC)
+- Event Viewer
+- Command Prompt
+- Azure Virtual Machines
+
+<h2>Operating Systems Used </h2>
+
+- Windows Server 2022
+- Windows 10 (22H2)
+
+<h2>High-Level Deployment and Configuration Steps</h2>
+
+- Configure Group Policy Settings
+- Edit the Default Domain Policy GPO to enforce account lockout policies.
+- Force Group Policy Update on Client
+- Use gpupdate /force and verify with gpresult /r.
+- Simulate Account Lockout
+- Attempt multiple failed logins as a domain user to trigger a lockout.
+- Manage User Accounts in ADUC
+- Unlock accounts, reset passwords, and enable/disable accounts via Active Directory Users and Computers.
+- Audit Security Logs in Event Viewer
+
+
+
+<h2>Deployment and Configuration Steps</h2>
+
+## Step 1: Configure Group Policy settings as Domain Admin
 - We are going to login to our domain controller machine **DC-1** using **jane_admin** since she is the Domain Admin
 - Right click the start menu -> Click Run
 - Type in **gpmc.msc** (screenshot below)
@@ -64,7 +91,7 @@ Observing Logs
 - If it was a Custom GPO, however, we would have to link it. This is not the case here.
 
 
-# Step 2: Force Update Group Policy
+## Step 2: Force Update Group Policy
 
 - Let’s force the client machine to apply the latest Group Policy updates immediately.
 - Alternatively, you could wait 90 minutes for Group Policy to update automatically.
@@ -83,7 +110,7 @@ Optional:
 
 <img width="564" height="208" alt="Screenshot 2025-09-24 at 10 58 36 PM" src="https://github.com/user-attachments/assets/567ad9f8-6149-46e1-9cf7-d604e587ad46" />
 
-# Step 3: Domain User Locks Themselves ouf of Account
+## Step 3: Domain User Locks Themselves ouf of Account
 
 - We will be acting as the domain user **cal.did**
 - Next, you are going to **purposely fail to log into the account**
@@ -100,7 +127,7 @@ Optional:
 - This means our Group Policy worked!
 - Let's go back to being a Domain Admin on our Domain Controller.
 
-# Step 4: Domain Admin  Unlocks Account
+## Step 4: Domain Admin  Unlocks Account
 
 - As the Domain Admin we will go back to the **Active Directory Users and Computers** window to view **cal.did**'s account.
 - Since we have so many user accounts, right-click mydomain.com -> click Find
@@ -119,7 +146,7 @@ Optional:
 <img width="413" height="534" alt="Screenshot 2025-09-24 at 11 21 56 PM" src="https://github.com/user-attachments/assets/44f4101d-75a4-481b-abe2-d32b2385ab6a" />
 
 
-# Step 5: Domain User Attempts to Login Again
+## Step 5: Domain User Attempts to Login Again
 
 - Let's try to log into our **CLIENT-1** machine again as cal.did
 - Enter your credentials correctly this time.
@@ -169,7 +196,7 @@ Optional:
 
 <img width="251" height="264" alt="Screenshot 2025-09-25 at 3 11 30 PM" src="https://github.com/user-attachments/assets/a94d6098-7ef5-4ff2-8c9a-9c98e0535143" />
 
-## Step 9: Observe Logs (as Domain Admin in CLIENT-1 machine)
+## Step 8: Observe Logs (as Domain Admin in CLIENT-1 machine)
 
 - Click the Start menu -> Type in **eventvwr.msc**
 - You should get the **Event Viewer** window to pop up (screenshot below)
@@ -188,7 +215,7 @@ Optional:
 <img width="962" height="741" alt="Screenshot 2025-09-25 at 3 37 55 PM" src="https://github.com/user-attachments/assets/9a176f1e-9e5f-4e0a-bc3d-0b1b2881a6b0" />
 
 
-## Optional Step: You can view the logs as a Domain User as well. 
+## Optional Know-How: You can view the logs as a Domain User as well. 
 - If you were logged into a regular non-admin Domain User account on the CLIENT-1 machine, you won't be able to just view the logs.
 - However! You can still view logs you just have to follow some different steps.
 - Type in **eventvwr.msc** -> Right-click and click **Run as administrator**
@@ -198,5 +225,26 @@ Optional:
 
 <img width="308" height="324" alt="Screenshot 2025-09-25 at 3 28 47 PM" src="https://github.com/user-attachments/assets/94e5e93a-4494-4790-a26d-df846e44e132" />
 
+## Summary of What We Did:
 
+- Configured the Default Domain Policy GPO to enforce account lockout settings and administrator lockout policies.
+
+- Demonstrated how to force a Group Policy update on a client machine using gpupdate /force and verify with gpresult /r.
+
+- Simulated a user account lockout by intentionally failing multiple login attempts as a domain user.
+
+- Used Active Directory Users and Computers to unlock the user account, reset passwords, and enable/disable accounts.
+
+- Explored the Event Viewer logs to verify failed login attempts and observe event details like Event ID 4625 and showed how detailed logs can be.
+
+
+## Ideally..
+We want the ability to view logs from all domain-joined machines, not just the one we're logged into. In this project, we accessed Event Viewer directly on the client machine because the Domain Controller does not provide detailed logs for other devices by default.
+
+In a production environment, we’d use a SIEM to centralize log collection and monitoring across all endpoints.
+
+If you're curious, I've also completed projects utilizing Microsoft Sentinel, Microsoft Defender for Endpoint (MDE), and Kusto Query Language (KQL) to simulate threat hunting scenarios, analyze security logs, and perform vulnerability remediation across enterprise environments. Check them out below!
+
+- <a href="https://github.com/maggiemachuca/threat-hunting-scenario-tor/">Threat Hunting Project</a>
+- <a href="https://github.com/maggiemachuca/vulnerability-management-program">Vulnerability Management Project</a>
 
